@@ -11,6 +11,7 @@ exports.handler = async (event, context) => {
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Allow": "OPTIONS, POST",
+                "Access-Control-Allow-Headers": "content-type",
             },
             statusCode: 200,
         };
