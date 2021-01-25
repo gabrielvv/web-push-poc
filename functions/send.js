@@ -14,7 +14,6 @@ exports.handler = async (event, context) => {
 
     console.log('Function `send` invoked')
 
-    /* configure faunaDB Client with our secret */
     const client = new faunadb.Client({
         secret: process.env.FAUNADB_SERVER_SECRET
     })
@@ -27,7 +26,6 @@ exports.handler = async (event, context) => {
         return q.Get(ref);
     });
 
-    // then query the refs
     const ret = await client.query(getAllSubscriptionDataQuery);
     const subscriptionList = ret.map(obj => ({
         ref: obj.ref,
