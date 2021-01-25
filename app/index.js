@@ -1,7 +1,7 @@
 // Register a Service Worker.
 navigator.serviceWorker.register('service-worker.js');
 
-const baseUrl = './.netlify/functions'
+const baseUrl = 'https://clever-bohr-4d8306.netlify.app/.netlify/functions'
 
 navigator.serviceWorker.ready
     .then(function (registration) {
