@@ -36,6 +36,9 @@ exports.handler = async (event, context) => {
             if (subscriptionWithEndpoint) {
                 console.log('already registered')
                 return {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                    },
                     statusCode: 200,
                 }
             }
