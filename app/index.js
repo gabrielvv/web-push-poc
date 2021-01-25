@@ -18,17 +18,15 @@ navigator.serviceWorker.ready
                         userVisibleOnly: true,
                         applicationServerKey: convertedVapidKey
                     })
-
-                    await fetch(`${baseUrl}/register`, {
-                        method: 'post',
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            subscription: subscription
-                        }),
-                    });
                 }
+
+                await fetch(`${baseUrl}/register`, {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(subscription),
+                });
 
                 document.getElementById('doIt').onclick = function () {
                     fetch(`${baseUrl}/send`, {

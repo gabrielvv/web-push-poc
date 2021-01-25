@@ -26,6 +26,22 @@ exports.handler = async (event, context) => {
     }
 
     try {
+        try {
+            const {data: subscriptionWithEndpoint} = await client.query(q.Get(
+                q.Match(
+                    q.Index("subscription_by_endpoint"),
+                    data.endpoint,
+                )
+            ));
+            if (subscriptionWithEndpoint) {
+                console.log('already registered')
+                return {
+                    statusCode: 200,
+                }
+            }
+        } catch (err) {
+            console.error(err.message)
+        }
         const response = await client.query(q.Create(q.Collection(process.env.FAUNADB_COLLECTION), subscriptionItem))
         console.log('success', response)
         return {

@@ -49,12 +49,12 @@ exports.handler = async (event, context) => {
         const subscription = subscriptionList[i];
         const subscriptionData = subscription.data;
         try {
-            await webpush.sendNotification(subscriptionData.subscription, 'notification')
-            console.log('Push Application Server - Notification sent to ' + subscriptionData.subscription.endpoint);
+            await webpush.sendNotification(subscriptionData, 'notification')
+            console.log('Push Application Server - Notification sent to ' + subscriptionData.endpoint);
         } catch (err) {
             errors.push(err.message);
             console.log(err.statusCode, err.message);
-            console.log('ERROR in sending Notification, endpoint removed ' + subscriptionData.subscription.endpoint);
+            console.log('ERROR in sending Notification, endpoint removed ' + subscriptionData.endpoint);
             await client.query(q.Delete(
                 q.Ref(subscription.ref)
             ));
