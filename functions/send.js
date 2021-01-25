@@ -29,7 +29,15 @@ exports.handler = async (event, context) => {
             return client.query(getAllSubscriptionDataQuery).then((ret) => {
                 const subscriptionList = ret.map(obj => obj.data);
                 return Promise.all(subscriptionList.map(subscription => {
-                    return webpush.sendNotification(subscription, 'notification');
+                    return webpush.sendNotification(subscription, 'notification')
+                        .then(function() {
+                            console.log('Push Application Server - Notification sent to ' + subscription.endpoint);
+                        }).catch(function() {
+                            console.log('ERROR in sending Notification, endpoint removed ' + subscription.endpoint);
+                            return client.query(q.Delete(
+                                q.Ref(q.Collection(process.env.FAUNADB_COLLECTION), subscription.endpoint)
+                            ))
+                        });
                 }));
             })
         }).catch((error) => {

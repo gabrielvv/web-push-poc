@@ -9,7 +9,9 @@ exports.handler = async (event, context) => {
     })
     const data = JSON.parse(event.body)
     console.log(`Function 'unregister' invoked. delete id: ${data.endpoint}`)
-    return client.query(q.Delete(q.Ref(`${process.env.FAUNADB_COLLECTION}/${id}`)))
+    return client.query(q.Delete(
+        q.Ref(q.Collection(process.env.FAUNADB_COLLECTION), data.endpoint)
+    ))
         .then((response) => {
             console.log('success', response)
             return {
