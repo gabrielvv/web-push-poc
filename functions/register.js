@@ -18,12 +18,18 @@ exports.handler = async (event, context) => {
         const response = await client.query(q.Create(q.Collection(process.env.FAUNADB_COLLECTION), subscriptionItem))
         console.log('success', response)
         return {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
             statusCode: 200,
             body: JSON.stringify(response)
         }
     } catch(error) {
         console.log('error', error)
         return {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
             statusCode: 400,
             body: JSON.stringify(error)
         }
