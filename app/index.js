@@ -4,10 +4,10 @@ navigator.serviceWorker.register('service-worker.js');
 const baseUrl = './.netlify/functions'
 
 navigator.serviceWorker.ready
-    .then(function(registration) {
+    .then(function (registration) {
         // Use the PushManager to get the user's subscription to the push service.
         return registration.pushManager.getSubscription()
-            .then(async function(subscription) {
+            .then(async function (subscription) {
                 // If a subscription was found, return it.
                 if (subscription) {
                     return subscription;
@@ -27,7 +27,7 @@ navigator.serviceWorker.ready
                     applicationServerKey: convertedVapidKey
                 });
             });
-    }).then(function(subscription) {
+    }).then(function (subscription) {
     // Send the subscription details to the server using the Fetch API.
     fetch(`${baseUrl}/register`, {
         method: 'post',
@@ -39,7 +39,7 @@ navigator.serviceWorker.ready
         }),
     });
 
-    document.getElementById('doIt').onclick = function() {
+    document.getElementById('doIt').onclick = function () {
         const delay = document.getElementById('notification-delay').value;
         const ttl = document.getElementById('notification-ttl').value;
 

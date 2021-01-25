@@ -36,7 +36,7 @@ exports.handler = async (event, context) => {
     console.log(subscriptionList)
 
     const errors = [];
-    for(let i = 0; i < subscriptionList.length; i++) {
+    for (let i = 0; i < subscriptionList.length; i++) {
         const subscription = subscriptionList[i];
         const subscriptionData = subscription.data;
         try {
