@@ -4,6 +4,15 @@ const q = faunadb.query
 
 // FIXME
 exports.handler = async (event, context) => {
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
+            statusCode: 200,
+        };
+    }
+
     /* configure faunaDB Client with our secret */
     const client = new faunadb.Client({
         secret: process.env.FAUNADB_SERVER_SECRET

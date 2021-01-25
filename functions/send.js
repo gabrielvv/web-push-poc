@@ -6,6 +6,15 @@ const q = faunadb.query;
 require('dotenv').config();
 
 exports.handler = async (event, context) => {
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
+            statusCode: 200,
+        };
+    }
+
     webpush.setVapidDetails(
         process.env.WEBPUSH_SUBJECT,
         process.env.VAPID_PUBLIC_KEY,

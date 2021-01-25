@@ -5,6 +5,15 @@ const q = faunadb.query;
 require('dotenv').config();
 
 exports.handler = async (event, context) => {
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
+            statusCode: 200,
+        };
+    }
+
     const client = new faunadb.Client({
         secret: process.env.FAUNADB_SERVER_SECRET
     })
