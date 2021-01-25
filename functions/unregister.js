@@ -2,6 +2,7 @@
 const faunadb = require('faunadb')
 const q = faunadb.query
 
+// FIXME
 exports.handler = async (event, context) => {
     /* configure faunaDB Client with our secret */
     const client = new faunadb.Client({

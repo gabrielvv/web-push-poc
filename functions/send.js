@@ -13,42 +13,47 @@ exports.handler = async (event, context) => {
     );
 
     console.log('Function `send` invoked')
+
     /* configure faunaDB Client with our secret */
     const client = new faunadb.Client({
         secret: process.env.FAUNADB_SERVER_SECRET
     })
-    return client.query(q.Paginate(q.Documents(q.Collection(process.env.FAUNADB_COLLECTION))))
-        .then(response => {
-            const subscriptionRefs = response.data
-            console.log('Subscription refs', subscriptionRefs)
-            console.log(`${subscriptionRefs.length} subscriptions found`)
-            const getAllSubscriptionDataQuery = subscriptionRefs.map((ref) => {
-                return q.Get(ref)
-            })
-            // then query the refs
-            return client.query(getAllSubscriptionDataQuery).then((ret) => {
-                const subscriptionList = ret.map(obj => ({
-                    ref: obj.ref,
-                    ...obj.data
-                }));
-                // console.log(subscriptionList)
-                return Promise.all(subscriptionList.map(subscription => {
-                    return webpush.sendNotification(subscription, 'notification')
-                        .then(function() {
-                            console.log('Push Application Server - Notification sent to ' + subscription.endpoint);
-                        }).catch(function() {
-                            console.log('ERROR in sending Notification, endpoint removed ' + subscription.endpoint);
-                            return client.query(q.Delete(
-                                q.Ref(subscription.ref)
-                            ))
-                        });
-                }));
-            })
-        }).catch((error) => {
-            console.log('error', error)
-            return {
-                statusCode: 400,
-                body: JSON.stringify(error)
-            }
-        })
-};
+    const response = await client.query(q.Paginate(q.Documents(q.Collection(process.env.FAUNADB_COLLECTION))))
+    const subscriptionRefs = response.data;
+
+    console.log('Subscription refs', subscriptionRefs);
+    console.log(`${subscriptionRefs.length} subscriptions found`);
+    const getAllSubscriptionDataQuery = subscriptionRefs.map((ref) => {
+        return q.Get(ref);
+    });
+
+    // then query the refs
+    const ret = await client.query(getAllSubscriptionDataQuery);
+    const subscriptionList = ret.map(obj => ({
+        ref: obj.ref,
+        data: obj.data
+    }));
+    console.log(subscriptionList)
+
+    const errors = [];
+    for(let i = 0; i < subscriptionList.length; i++) {
+        const subscription = subscriptionList[i];
+        const subscriptionData = subscription.data;
+        try {
+            await webpush.sendNotification(subscriptionData.subscription, 'notification')
+            console.log('Push Application Server - Notification sent to ' + subscriptionData.subscription.endpoint);
+        } catch (err) {
+            errors.push(err.message);
+            console.log(err.statusCode, err.message);
+            console.log('ERROR in sending Notification, endpoint removed ' + subscriptionData.subscription.endpoint);
+            await client.query(q.Delete(
+                q.Ref(subscription.ref)
+            ));
+        }
+    }
+
+    return {
+        statusCode: errors.length ? 400 : 200,
+        body: errors.length ? JSON.stringify(errors) : "",
+    };
+}
