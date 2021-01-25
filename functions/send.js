@@ -49,7 +49,7 @@ exports.handler = async (event, context) => {
         const subscription = subscriptionList[i];
         const subscriptionData = subscription.data;
         try {
-            await webpush.sendNotification(subscriptionData, 'notification')
+            await webpush.sendNotification(subscriptionData, `notification ${i}`)
             console.log('Push Application Server - Notification sent to ' + subscriptionData.endpoint);
         } catch (err) {
             errors.push(err.message);
